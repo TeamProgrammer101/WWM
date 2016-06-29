@@ -1,0 +1,67 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title Marker animations with google
+    style.
+      html, body, #map-canvas {
+      height: 100%;
+      margin: 0px;
+      padding: 0px
+      }
+      #panel {
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      margin-left: -180px;
+      z-index: 5;
+      background-color: #fff;
+      padding: 5px;
+      border: 1px solid #999;
+      }
+    script(src="https://maps.googleapis.com/maps/api/js?v=3.exp")
+    script.
+      var korea = new google.maps.LatLng(37.553156,126.972560);    //좌표값을 변수에 저장
+      var neighborhoods = [
+        new google.maps.LatLng(34.461912, 135.565449),    //drop 버튼 클릭시 해당 좌표값에 마커를 떨어뜨림
+        new google.maps.LatLng(46.952000, 119.972560),
+        new google.maps.LatLng(40.553156, 116.972560),
+        new google.maps.LatLng(14.553156, 121.972560)
+      ];
+      var markers = [];
+      var iterator = 0;
+      var map;
+      function initialize() {
+      var mapOptions = {
+      zoom: 4,
+      center: korea,
+      mapTypeControl: true,
+      mapTypeControlOptions: {
+        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+        position: google.maps.ControlPosition.RIGHT_CENTER
+      },
+      };  
+      map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+      }
+      function drop() {
+      for (var i = 0; i < neighborhoods.length; i++) {
+      setTimeout(function() {
+      addMarker();
+      }, i * 200);
+      }
+      }
+      function addMarker() {
+      markers.push(new google.maps.Marker({
+      position: neighborhoods[iterator],
+      map: map,
+      draggable: false,
+      animation: google.maps.Animation.DROP
+      }));
+      iterator++;
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+  body
+    #panel(style="margin-left: -52px")
+      button#drop(onclick="drop()") Drop Markers
+    #map-canvas
